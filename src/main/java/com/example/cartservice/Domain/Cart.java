@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Collection;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-@Document(collation =  "cartShopping")
+@Document(collection = "carts")
 public class Cart {
 
     @Id
