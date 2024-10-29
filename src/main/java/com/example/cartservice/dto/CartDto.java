@@ -1,11 +1,10 @@
 package com.example.cartservice.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
 import java.util.List;
+
 @Data
 public class CartDto {
 
@@ -13,7 +12,7 @@ public class CartDto {
     private String id;
 
     @NotBlank
-    private String idUser;
+    private String userId;
 
     @NotBlank
     private List<String> booksIds;

@@ -11,10 +11,10 @@ import lombok.Getter;
 public enum Error {
 
     NO_USERS_FOUND("NO_USERS_FOUND", "No users were found."),
-    NO_USER_FOUND_BY_ID("NO_USER_FOUND_BY_ID", "No user was found by ID."),
+    NO_CART_FOUND_BY_ID("NO_CART_FOUND_BY_ID", "No cart was found by ID."),
     NO_USER_FOUND_BY_FIRST_AND_LAST_NAME("NO_USER_FOUND_BY_FIRST_AND_LAST_NAME",
             "No user was found by first and last name."),
-    USER_ALREADY_EXISTS("USER_ALREADY_EXISTS", "User already exists."),;
+    CART_ALREADY_EXISTS("CART_ALREADY_EXISTS", "Cart already exists for the given user."),;
 
     private final String errorMessage;
     private final String errorDescription;

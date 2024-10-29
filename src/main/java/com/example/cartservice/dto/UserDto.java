@@ -1,6 +1,5 @@
 package com.example.cartservice.dto;
 
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.springframework.data.annotation.Id;

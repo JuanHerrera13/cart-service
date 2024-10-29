@@ -1,5 +1,4 @@
-package com.example.cartservice.Domain;
-
+package com.example.cartservice.domain;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -7,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -19,7 +17,7 @@ public class Cart {
     private String id;
 
     @NotNull
-    private String idUser;
+    private String userId;
 
     @NotNull
     private List<String> booksIds;

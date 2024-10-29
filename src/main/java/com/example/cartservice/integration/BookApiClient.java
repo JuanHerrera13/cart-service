@@ -1,18 +1,32 @@
 package com.example.cartservice.integration;
 
 import com.example.cartservice.dto.BookDto;
+import com.example.cartservice.exception.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Service
 public class BookApiClient {
-    private static final String BOOK_SERVICE_GET_BY_ID = "http://localhost:8085/book-service/v1/books/";
 
-    public static BookDto getBookByTitle(String bookTitle) {
+    private static final String BOOK_SERVICE_URL = "http://localhost:8080/book-service/v1/books/id/";
+
+    public void getBookById(String bookId) {
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<BookDto> response = restTemplate.getForEntity(BOOK_SERVICE_GET_BY_ID + bookTitle, BookDto.class);
-        return response.getBody();
+        try {
+            log.info("Chamando book service com bookId: {}", bookId);
+            ResponseEntity<BookDto> response = restTemplate.getForEntity(BOOK_SERVICE_URL + bookId, BookDto.class);
+            response.getBody();
+        } catch (HttpClientErrorException.NotFound e) {
+            log.error("Livro não encontrado com bookId: {}", bookId);
+            throw new NotFoundException("Livro não foi encontrado com o id "
+                    + bookId);
+        } catch (Exception e) {
+            throw new RestClientException(e.getMessage());
+        }
     }
 }
-

@@ -1,6 +1,6 @@
 package com.example.cartservice.dto.mapping;
 
-import com.example.cartservice.Domain.Cart;
+import com.example.cartservice.domain.Cart;
 import com.example.cartservice.dto.CartCreationDto;
 import com.example.cartservice.dto.CartDto;
 import org.mapstruct.Mapper;
