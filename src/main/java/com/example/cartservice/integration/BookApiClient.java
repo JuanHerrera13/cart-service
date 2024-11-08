@@ -15,12 +15,12 @@ public class BookApiClient {
 
     private static final String BOOK_SERVICE_URL = "http://localhost:8080/book-service/v1/books/id/";
 
-    public void getBookById(String bookId) {
+    public BookDto getBookById(String bookId) {
         RestTemplate restTemplate = new RestTemplate();
         try {
             log.info("Chamando book service com bookId: {}", bookId);
             ResponseEntity<BookDto> response = restTemplate.getForEntity(BOOK_SERVICE_URL + bookId, BookDto.class);
-            response.getBody();
+            return response.getBody();
         } catch (HttpClientErrorException.NotFound e) {
             log.error("Livro não encontrado com bookId: {}", bookId);
             throw new NotFoundException("Livro não foi encontrado com o id "

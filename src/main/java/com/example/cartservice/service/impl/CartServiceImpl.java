@@ -1,6 +1,7 @@
 package com.example.cartservice.service.impl;
 
 import com.example.cartservice.domain.Cart;
+import com.example.cartservice.dto.BookDto;
 import com.example.cartservice.exception.CartAlreadyExists;
 import com.example.cartservice.exception.CartCreationException;
 import com.example.cartservice.exception.NotFoundException;
@@ -27,6 +28,7 @@ import static com.example.cartservice.enumerator.Error.NO_CART_FOUND_BY_ID;
 public class CartServiceImpl implements CartService {
 
     private static final String SEARCHING_CART_BY_USER_ID = "Searching cart by user id {}";
+    private static final int MIN_ALLOWED_BOOKS = 1;
 
     private final CartMapper cartMapper;
     private final CartRepository cartRepository;
@@ -43,19 +45,22 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartDto addCart(CartCreationDto cartCreationDto) {
         log.info(SEARCHING_CART_BY_USER_ID, cartCreationDto.getUserId());
-        cartRepository.findTopByUserId(cartCreationDto.getUserId()).ifPresent(cart -> {
+        cartRepository.findTopByUserId(cartCreationDto.getUserId()).ifPresent(_ -> {
             log.error(CART_ALREADY_EXISTS.getErrorDescription());
             throw new CartAlreadyExists(CART_ALREADY_EXISTS.getErrorDescription());
         });
         try {
             userApiClient.getUserById(cartCreationDto.getUserId());
             for (String bookId : cartCreationDto.getBooksIds()) {
-                bookApiClient.getBookById(bookId);
+                final BookDto bookDto = bookApiClient.getBookById(bookId);
+                if (bookDto.getQuantity() < MIN_ALLOWED_BOOKS) {
+                    throw new CartCreationException("O livro ".concat(bookDto.getTitle()).concat(" não está mais disponível!"));
+                }
             }
         } catch (NotFoundException e) {
             throw new NotFoundException("Carrinho não pôde ser criado, pois: " + e.getMessage());
         } catch (Exception e) {
-            throw new CartCreationException(e.getMessage());
+            throw new CartCreationException("Carrinho não pôde ser criado, pois: " + e.getMessage());
         }
         Cart cart = cartMapper.cartCreationDtoToCart(cartCreationDto);
         cartRepository.save(cart);
@@ -75,7 +80,10 @@ public class CartServiceImpl implements CartService {
         final Cart cart = this.findCartById(cartId);
         try {
             for (String bookId : cartBookListDto.getBooksIds()) {
-                bookApiClient.getBookById(bookId);
+                final BookDto bookDto = bookApiClient.getBookById(bookId);
+                if (bookDto.getQuantity() < MIN_ALLOWED_BOOKS) {
+                    throw new CartCreationException("O livro ".concat(bookDto.getTitle()).concat(" não está mais disponível!"));
+                }
             }
         } catch (NotFoundException e) {
             throw new NotFoundException("Livro não pôde ser adicionado, pois: " + e.getMessage());
